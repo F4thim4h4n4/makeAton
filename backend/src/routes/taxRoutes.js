@@ -6,6 +6,7 @@ import {
   getTaxById,
   updateTax,
   deactivateTax,
+  calculateTaxPreview,
 } from '../controllers/taxController.js';
 import { validateRequest } from '../validators/validationMiddleware.js';
 import { authorizeAdmin } from '../middleware/auth.js';
@@ -42,6 +43,18 @@ router.post(
   ],
   validateRequest,
   createTax
+);
+
+// POST /api/taxes/calculate
+router.post(
+  '/calculate',
+  [
+    body('amount').exists().isFloat({ min: 0 }).toFloat(),
+    body('productId').optional().isMongoId(),
+    body('date').optional().isISO8601(),
+  ],
+  validateRequest,
+  calculateTaxPreview
 );
 
 // GET /api/taxes/:id

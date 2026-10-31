@@ -1,4 +1,5 @@
 import DiscountRule from '../models/discountRule.js';
+import { evaluateDiscount, incrementUsage } from '../services/discountCalculator.js';
 
 const buildFilter = (query) => {
   const filter = {};
@@ -148,6 +149,37 @@ export const deactivateDiscount = async (req, res) => {
     res.json({ success: true, data: discount });
   } catch (err) {
     console.error('[POST /api/discounts/:id/deactivate] error', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const evaluateDiscountPreview = async (req, res) => {
+  try {
+    const { discountId, productId, amount, quantity, date } = req.body;
+    const result = await evaluateDiscount({
+      discountId,
+      productId,
+      amount: Number(amount) || 0,
+      quantity: Number(quantity) || 1,
+      date: date ? new Date(date) : new Date(),
+    });
+    res.json({ success: true, data: result });
+  } catch (err) {
+    console.error('[POST /api/discounts/evaluate] error', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const applyDiscountUsage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await incrementUsage(id);
+    if (!updated) {
+      return res.status(404).json({ success: false, message: 'Discount not found' });
+    }
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    console.error('[POST /api/discounts/:id/apply] error', err);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };

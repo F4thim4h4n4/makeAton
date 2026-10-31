@@ -6,6 +6,8 @@ import {
   getDiscountById,
   updateDiscount,
   deactivateDiscount,
+  evaluateDiscountPreview,
+  applyDiscountUsage,
 } from '../controllers/discountController.js';
 import { validateRequest } from '../validators/validationMiddleware.js';
 import { authorizeAdmin } from '../middleware/auth.js';
@@ -50,6 +52,20 @@ router.post(
   createDiscount
 );
 
+// POST /api/discounts/evaluate
+router.post(
+  '/evaluate',
+  [
+    body('discountId').exists().isMongoId(),
+    body('amount').exists().isFloat({ min: 0 }).toFloat(),
+    body('productId').optional().isMongoId(),
+    body('quantity').optional().isInt({ min: 1 }).toInt(),
+    body('date').optional().isISO8601(),
+  ],
+  validateRequest,
+  evaluateDiscountPreview
+);
+
 // GET /api/discounts/:id
 router.get('/:id', [param('id').isMongoId()], validateRequest, getDiscountById);
 
@@ -84,6 +100,14 @@ router.post(
   [param('id').isMongoId()],
   validateRequest,
   deactivateDiscount
+);
+
+// POST /api/discounts/:id/apply
+router.post(
+  '/:id/apply',
+  [param('id').isMongoId()],
+  validateRequest,
+  applyDiscountUsage
 );
 
 export default router;

@@ -1,4 +1,5 @@
 import TaxRule from '../models/taxRule.js';
+import { calculateTax } from '../services/taxCalculator.js';
 
 const buildFilter = (query) => {
   const filter = {};
@@ -125,6 +126,21 @@ export const deactivateTax = async (req, res) => {
     res.json({ success: true, data: tax });
   } catch (err) {
     console.error('[POST /api/taxes/:id/deactivate] error', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const calculateTaxPreview = async (req, res) => {
+  try {
+    const { productId, amount, date } = req.body;
+    const result = await calculateTax({
+      productId,
+      amount: Number(amount) || 0,
+      date: date ? new Date(date) : new Date(),
+    });
+    res.json({ success: true, data: result });
+  } catch (err) {
+    console.error('[POST /api/taxes/calculate] error', err);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
