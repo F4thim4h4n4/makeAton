@@ -1,0 +1,2 @@
+// Static assets (images, SVGs, fonts) go here.
+// Reference them in components via: import logo from '../assets/logo.svg'

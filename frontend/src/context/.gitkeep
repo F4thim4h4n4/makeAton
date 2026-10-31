@@ -1,0 +1,4 @@
+// React context providers go here.
+// Examples:
+//   AuthContext.jsx    – global authentication state (Member 2)
+//   ThemeContext.jsx   – UI theme / dark-mode toggle (Member 4)

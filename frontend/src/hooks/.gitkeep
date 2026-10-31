@@ -1,0 +1,5 @@
+// Reusable custom React hooks go here.
+// Examples:
+//   useAuth.js       – auth state and helpers (Member 2)
+//   useSubscription.js – subscription data fetching (Member 2)
+//   useDashboard.js  – dashboard metrics (Member 4)
