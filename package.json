@@ -1,9 +1,13 @@
 {
-  "name": "subscription-management-system",
-  "version": "0.1.0",
-  "description": "MakeAton Hackathon – Subscription Management System (monorepo root)",
-  "private": true,
+  "name": "brightloop-subscription-management",
+  "version": "1.0.0",
+  "description": "Brightloop Software - Subscription Management, Recurring Billing & Payment System (MakeAton Hackathon)",
+  "main": "src/server.js",
   "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "seed": "node src/database/seed.js",
+    "test": "node --test tests/billing.test.js"
     "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "npm --prefix frontend run dev",
     "dev:backend": "npm --prefix backend run dev",
@@ -13,11 +17,18 @@
     "test": "npm --prefix backend run test",
     "install:all": "npm install && npm --prefix frontend install && npm --prefix backend install"
   },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+  "keywords": [
+    "subscription-management",
+    "recurring-billing",
+    "invoicing",
+    "payments",
+    "hackathon",
+    "makeaton"
+  ],
+  "author": "Brightloop Team (Member 3: Billing & Payments)",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
   }
 }
