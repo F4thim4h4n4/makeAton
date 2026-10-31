@@ -1,0 +1,22 @@
+{
+  "name": "subscription-management-system",
+  "version": "0.1.0",
+  "description": "MakeAton Hackathon – Subscription Management System (monorepo root)",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "start:frontend": "npm --prefix frontend run preview",
+    "start:backend": "npm --prefix backend run start",
+    "lint": "npm --prefix frontend run lint && npm --prefix backend run lint",
+    "install:all": "npm install && npm --prefix frontend install && npm --prefix backend install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

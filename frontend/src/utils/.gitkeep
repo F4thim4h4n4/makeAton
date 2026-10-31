@@ -1,0 +1,5 @@
+// Shared utility/helper functions go here.
+// Examples:
+//   formatCurrency.js  – number → currency string
+//   formatDate.js      – date formatting helpers
+//   validators.js      – client-side form validation helpers
