@@ -1,0 +1,26 @@
+{
+  "name": "brightloop-subscription-management",
+  "version": "1.0.0",
+  "description": "Brightloop Software - Subscription Management, Recurring Billing & Payment System (MakeAton Hackathon)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "seed": "node src/database/seed.js",
+    "test": "node --test tests/billing.test.js"
+  },
+  "keywords": [
+    "subscription-management",
+    "recurring-billing",
+    "invoicing",
+    "payments",
+    "hackathon",
+    "makeaton"
+  ],
+  "author": "Brightloop Team (Member 3: Billing & Payments)",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

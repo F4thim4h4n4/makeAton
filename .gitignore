@@ -1,0 +1,7 @@
+node_modules/
+brightloop.db
+brightloop.db-wal
+brightloop.db-shm
+.env
+.DS_Store
+*.log

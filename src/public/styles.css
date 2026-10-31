@@ -1,0 +1,71 @@
+/* Custom styles for Brightloop Subscription Management System */
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.nav-tab.active {
+  background-color: #4338ca;
+  color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(67, 56, 202, 0.2);
+}
+
+/* Custom Badges */
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.badge-paid {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-confirmed {
+  background-color: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
+.badge-draft {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.badge-overdue {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.badge-cancelled {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+.badge-active {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+/* Print Invoice Styles */
+@media print {
+  header, aside, .no-print {
+    display: none !important;
+  }
+  body, main {
+    background: white !important;
+    padding: 0 !important;
+  }
+}
