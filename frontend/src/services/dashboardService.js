@@ -1,6 +1,6 @@
 /**
  * dashboardService.js  (Member 4 – feature/dashboard-portal)
- * Axios helpers for all dashboard and report API endpoints.
+ * Axios helpers for all dashboard, report, and customer portal API endpoints.
  */
 
 import axios from 'axios';
@@ -26,8 +26,8 @@ export const fetchRevenueReport = (params = {}) =>
 export const fetchOverdueReport = () =>
   api.get('/reports/overdue').then((r) => r.data);
 
-export const fetchSubscriptionReport = () =>
-  api.get('/reports/subscriptions').then((r) => r.data);
+export const fetchSubscriptionReport = (params = {}) =>
+  api.get('/reports/subscriptions', { params }).then((r) => r.data);
 
 export const downloadRevenueCsv = (params = {}) => {
   const qs = new URLSearchParams(params).toString();
@@ -37,3 +37,19 @@ export const downloadRevenueCsv = (params = {}) => {
   a.download = 'revenue-report.csv';
   a.click();
 };
+
+// Customer Portal
+export const fetchPortalProfile = () =>
+  api.get('/portal/profile').then((r) => r.data);
+
+export const fetchPortalSubscriptions = () =>
+  api.get('/portal/subscriptions').then((r) => r.data);
+
+export const fetchPortalInvoices = () =>
+  api.get('/portal/invoices').then((r) => r.data);
+
+export const fetchPortalInvoiceDetail = (id) =>
+  api.get(`/portal/invoices/${id}`).then((r) => r.data);
+
+export const fetchPortalPayments = () =>
+  api.get('/portal/payments').then((r) => r.data);

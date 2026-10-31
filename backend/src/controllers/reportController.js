@@ -70,11 +70,21 @@ export const getRevenueReport = async (req, res) => {
     ]);
 
     // Totals
-    const totalInvoiced = rows.reduce((s, r) => s + (r.totalAmount ?? 0), 0);
-    const totalReceived = rows.reduce((s, r) => s + (r.amountPaid ?? 0), 0);
-    const totalOutstanding = rows.reduce((s, r) => s + (r.outstandingAmount ?? 0), 0);
+    let filteredRows = rows;
+    if (req.query.customer) {
+      const q = req.query.customer.toLowerCase();
+      filteredRows = rows.filter((r) =>
+        (r.customerName && r.customerName.toLowerCase().includes(q)) ||
+        (r.customerEmail && r.customerEmail.toLowerCase().includes(q)) ||
+        (r.invoiceNumber && r.invoiceNumber.toLowerCase().includes(q))
+      );
+    }
 
-    res.json({ rows, totals: { totalInvoiced, totalReceived, totalOutstanding } });
+    const totalInvoiced = filteredRows.reduce((s, r) => s + (r.totalAmount ?? 0), 0);
+    const totalReceived = filteredRows.reduce((s, r) => s + (r.amountPaid ?? 0), 0);
+    const totalOutstanding = filteredRows.reduce((s, r) => s + (r.outstandingAmount ?? 0), 0);
+
+    res.json({ rows: filteredRows, totals: { totalInvoiced, totalReceived, totalOutstanding } });
   } catch (err) {
     res.status(500).json({ message: 'Failed to load revenue report', error: err.message });
   }
@@ -137,8 +147,17 @@ export const getOverdueReport = async (_req, res) => {
 
 // ── GET /api/reports/subscriptions ───────────────────────────────────────────
 
-export const getSubscriptionReport = async (_req, res) => {
+export const getSubscriptionReport = async (req, res) => {
   try {
+    const { status, from, to, customer } = req.query;
+    const match = {};
+    if (status) match.status = status;
+    if (from || to) {
+      match.startDate = {};
+      if (from) match.startDate.$gte = new Date(from);
+      if (to) match.startDate.$lte = new Date(to);
+    }
+
     const byStatus = await safeAggregate('Subscription', [
       { $group: { _id: '$status', count: { $sum: 1 } } },
       { $project: { status: '$_id', count: 1, _id: 0 } },
@@ -166,7 +185,52 @@ export const getSubscriptionReport = async (_req, res) => {
       { $sort: { count: -1 } },
     ]);
 
-    res.json({ byStatus, byPlan });
+    const rows = await safeAggregate('Subscription', [
+      { $match: match },
+      {
+        $lookup: {
+          from: 'customers',
+          localField: 'customer',
+          foreignField: '_id',
+          as: 'customerInfo',
+        },
+      },
+      { $unwind: { path: '$customerInfo', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'plans',
+          localField: 'plan',
+          foreignField: '_id',
+          as: 'planInfo',
+        },
+      },
+      { $unwind: { path: '$planInfo', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          subscriptionNumber: 1,
+          status: 1,
+          startDate: 1,
+          expiryDate: 1,
+          customerName: '$customerInfo.name',
+          customerEmail: '$customerInfo.email',
+          planName: '$planInfo.name',
+          billingInterval: '$planInfo.billingInterval',
+        },
+      },
+      { $sort: { startDate: -1 } },
+    ]);
+
+    let filteredRows = rows;
+    if (customer) {
+      const q = customer.toLowerCase();
+      filteredRows = rows.filter((r) =>
+        (r.customerName && r.customerName.toLowerCase().includes(q)) ||
+        (r.customerEmail && r.customerEmail.toLowerCase().includes(q)) ||
+        (r.subscriptionNumber && r.subscriptionNumber.toLowerCase().includes(q))
+      );
+    }
+
+    res.json({ byStatus, byPlan, rows: filteredRows });
   } catch (err) {
     res.status(500).json({ message: 'Failed to load subscription report', error: err.message });
   }
@@ -205,6 +269,16 @@ export const exportRevenueCsv = async (req, res) => {
       { $sort: { createdAt: -1 } },
     ]);
 
+    let filteredRows = rows;
+    if (req.query.customer) {
+      const q = req.query.customer.toLowerCase();
+      filteredRows = rows.filter((r) =>
+        (r.customerName && r.customerName.toLowerCase().includes(q)) ||
+        (r.customerEmail && r.customerEmail.toLowerCase().includes(q)) ||
+        (r.invoiceNumber && r.invoiceNumber.toLowerCase().includes(q))
+      );
+    }
+
     const escape = (v) => {
       const s = String(v ?? '');
       return s.includes(',') || s.includes('"') || s.includes('\n')
@@ -218,7 +292,7 @@ export const exportRevenueCsv = async (req, res) => {
       'Due Date', 'Created At',
     ];
 
-    const csvRows = rows.map((r) => [
+    const csvRows = filteredRows.map((r) => [
       r.invoiceNumber,
       r.customerName,
       r.customerEmail,
