@@ -2,10 +2,7 @@ import axios from 'axios';
 
 /**
  * Pre-configured Axios instance.
- *
- * The base URL falls back to '/api' so the Vite dev-server proxy transparently
- * forwards all /api/* requests to the backend (http://localhost:5000).
- * In production, set VITE_API_BASE_URL in the frontend .env file.
+ * Automatically attaches Authorization header if token exists in localStorage.
  */
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
@@ -15,25 +12,32 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
-// ── Request interceptor ───────────────────────────────────────────────────────
-// Attach the JWT access token from localStorage once auth is implemented.
+// Request interceptor: Attach JWT token
 apiClient.interceptors.request.use(
   (config) => {
-    // TODO (Member 2): const token = localStorage.getItem('accessToken');
-    // if (token) config.headers.Authorization = `Bearer ${token}`;
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// ── Response interceptor ──────────────────────────────────────────────────────
-// Global error handling – add token refresh logic here when auth is ready.
+// Response interceptor: Intercept errors
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const message =
       error.response?.data?.message || error.message || 'An unexpected error occurred.';
     console.error('[API Error]', message);
+
+    if (error.response?.status === 401 && !window.location.pathname.includes('/login')) {
+      // Clear token if invalid or expired
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
+
     return Promise.reject(error);
   }
 );
