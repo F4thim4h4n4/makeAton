@@ -27,11 +27,17 @@ app.use(express.urlencoded({ extended: true }));
 // ── API routes ────────────────────────────────────────────────────────────────
 app.use('/api/health', healthRoutes);
 
-// TODO (Member 1): mount product/pricing routes here
-// app.use('/api/products', productRoutes);
-// app.use('/api/plans', planRoutes);
-// app.use('/api/taxes', taxRoutes);
-// app.use('/api/discounts', discountRoutes);
+// Member 1: product & pricing routes
+import productRoutes from './routes/productRoutes.js';
+import variantRoutes from './routes/variantRoutes.js';
+import planRoutes from './routes/planRoutes.js';
+import taxRoutes from './routes/taxRoutes.js';
+import discountRoutes from './routes/discountRoutes.js';
+app.use('/api/products', productRoutes);
+app.use('/api/products/:id/variants', variantRoutes);
+app.use('/api/plans', planRoutes);
+app.use('/api/taxes', taxRoutes);
+app.use('/api/discounts', discountRoutes);
 
 // TODO (Member 2): mount auth/subscription routes here
 // app.use('/api/auth', authRoutes);
