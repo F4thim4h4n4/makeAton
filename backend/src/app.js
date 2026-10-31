@@ -39,11 +39,16 @@ app.use('/api/plans', planRoutes);
 app.use('/api/taxes', taxRoutes);
 app.use('/api/discounts', discountRoutes);
 
-// TODO (Member 2): mount auth/subscription routes here
-// app.use('/api/auth', authRoutes);
-// app.use('/api/customers', customerRoutes);
-// app.use('/api/quotations', quotationRoutes);
-// app.use('/api/subscriptions', subscriptionRoutes);
+// ── Member 2: Auth, Customer, Quotation & Subscription routes ────────────────
+import authRoutes from './routes/authRoutes.js';
+import customerRoutes from './routes/customerRoutes.js';
+import quotationRoutes from './routes/quotationRoutes.js';
+import subscriptionRoutes from './routes/subscriptionRoutes.js';
+
+app.use('/api/auth', authRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/quotations', quotationRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
 
 // TODO (Member 3): mount billing/payment routes here
 // app.use('/api/invoices', invoiceRoutes);
