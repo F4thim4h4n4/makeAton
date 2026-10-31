@@ -63,27 +63,42 @@ Response `200`:
 
 ---
 
-## Planned Endpoints (Member 1 – catalog-pricing)
+### Member 1: Catalog, Plans, Taxes & Discounts (feature/catalog-pricing)
 
-```
-GET    /api/products
-POST   /api/products
-GET    /api/products/:id
-PUT    /api/products/:id
-DELETE /api/products/:id
+#### Products & Variants
+- `GET /api/products?search=&type=&status=&page=&limit=` — List products with search, filters, pagination, and variant counts.
+- `POST /api/products` — Create product (`name`, `type`, `salesPrice`, `costPrice`, `notes`, `status`).
+- `GET /api/products/:id` — Retrieve single product details including its variants.
+- `PATCH /api/products/:id` — Update product.
+- `POST /api/products/:id/deactivate` — Safely deactivate product without breaking historical links.
+- `GET /api/products/:id/variants` — Get variants with calculated prices (`salesPrice + additionalPrice`).
+- `POST /api/products/:id/variants` — Create product variant (`name`, `additionalPrice`, `status`).
+- `PATCH /api/products/:id/variants/:variantId` — Update product variant.
 
-GET    /api/plans
-POST   /api/plans
-GET    /api/plans/:id
-PUT    /api/plans/:id
+#### Subscription Plans
+- `GET /api/plans?search=&billingInterval=&status=&page=&limit=` — List plans.
+- `POST /api/plans` — Create plan (`name`, `description`, `productIds`, `billingInterval`, `price`, `minQuantity`, `availableFrom`, `availableUntil`, `allowEarlyClose`, `allowPause`, `allowRenewal`, `autoCloseOnExpiry`, `status`).
+- `GET /api/plans/:id` — Get plan details with populated product associations.
+- `PATCH /api/plans/:id` — Update plan.
+- `POST /api/plans/:id/deactivate` — Deactivate plan.
+- `POST /api/plans/:id/calculate` — Authoritative price calculation for quantity: `{ planPrice, quantity, subtotal: price * quantity }`.
 
-GET    /api/taxes
-POST   /api/taxes
+#### Tax Rules
+- `GET /api/taxes?search=&type=&status=&page=&limit=` — List tax rules.
+- `POST /api/taxes` — Create tax rule (`name`, `type`, `rate`, `applicableProducts`, `effectiveFrom`, `effectiveTo`, `status`).
+- `GET /api/taxes/:id` — Get single tax rule.
+- `PATCH /api/taxes/:id` — Update tax rule.
+- `POST /api/taxes/:id/deactivate` — Deactivate tax rule.
+- `POST /api/taxes/calculate` — Calculate taxes for transaction: body `{ amount, productId?, date? }` → returns breakdown `{ applicable, taxes: [...], totalTax, amountAfterTax }`.
 
-GET    /api/discounts
-POST   /api/discounts
-GET    /api/discounts/:code/validate
-```
+#### Discount Rules
+- `GET /api/discounts?search=&type=&scope=&status=&page=&limit=` — List discounts.
+- `POST /api/discounts` — Create discount rule (`name`, `description`, `type`, `value`, `minPurchaseAmount`, `minQuantity`, `startDate`, `endDate`, `maxUsageCount`, `applicableProducts`, `scope`, `status`).
+- `GET /api/discounts/:id` — Get discount rule.
+- `PATCH /api/discounts/:id` — Update discount rule.
+- `POST /api/discounts/:id/deactivate` — Deactivate discount rule.
+- `POST /api/discounts/evaluate` — Evaluate discount applicability: body `{ discountId, amount, productId?, quantity?, date? }` → returns `{ applicable, discountAmount, amountAfterDiscount, reason? }`.
+- `POST /api/discounts/:id/apply` — Atomically increment usage count when invoice is paid/processed.
 
 ---
 
