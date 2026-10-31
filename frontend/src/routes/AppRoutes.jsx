@@ -12,6 +12,7 @@ import SubscriptionsPage from '../pages/SubscriptionsPage.jsx';
 import InvoicesPage from '../pages/InvoicesPage.jsx';
 import PaymentsPage from '../pages/PaymentsPage.jsx';
 import ReportsPage from '../pages/ReportsPage.jsx';
+import CustomerPortalPage from '../pages/CustomerPortalPage.jsx';  // Member 4
 import NotFoundPage from '../pages/NotFoundPage.jsx';
 
 function AppRoutes() {
@@ -32,6 +33,8 @@ function AppRoutes() {
         <Route path="/invoices"         element={<InvoicesPage />} />
         <Route path="/payments"         element={<PaymentsPage />} />
         <Route path="/reports"          element={<ReportsPage />} />
+        {/* Member 4 – Customer portal */}
+        <Route path="/portal"           element={<CustomerPortalPage />} />
       </Route>
 
       {/* 404 */}

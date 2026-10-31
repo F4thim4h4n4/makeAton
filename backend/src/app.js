@@ -3,6 +3,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import appConfig from './config/config.js';
 import healthRoutes from './routes/healthRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -43,9 +45,9 @@ app.use('/api/health', healthRoutes);
 // app.use('/api/invoices', invoiceRoutes);
 // app.use('/api/payments', paymentRoutes);
 
-// TODO (Member 4): mount dashboard/reports routes here
-// app.use('/api/dashboard', dashboardRoutes);
-// app.use('/api/reports', reportRoutes);
+// Member 4 – Dashboard & Reports routes
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/reports', reportRoutes);
 
 // ── Error handling (must be last) ─────────────────────────────────────────────
 app.use(notFound);
