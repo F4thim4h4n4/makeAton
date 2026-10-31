@@ -8,6 +8,14 @@
     "dev": "node src/server.js",
     "seed": "node src/database/seed.js",
     "test": "node --test tests/billing.test.js"
+    "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "start:frontend": "npm --prefix frontend run preview",
+    "start:backend": "npm --prefix backend run start",
+    "lint": "npm --prefix frontend run lint && npm --prefix backend run lint",
+    "test": "npm --prefix backend run test",
+    "install:all": "npm install && npm --prefix frontend install && npm --prefix backend install"
   },
   "keywords": [
     "subscription-management",
